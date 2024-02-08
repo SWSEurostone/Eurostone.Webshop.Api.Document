@@ -1,8 +1,8 @@
 ---
 openapi: 3.0.0
 info:
-  title: Eurostone webáruház kiszolgáló API
-  description: This is a simple API
+  title: Eurostone.Webshop.API
+  description: Harmadik fél számára nyújt elérhetőséget a Eurostone rendszerhez.
   contact:
     email: helpdesk@eurostone.hu
   license:
@@ -10,8 +10,8 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 24.1.2
 servers:
-- url: https://virtserver.swaggerhub.com/eurostone/Eurostone.Webshop.Api/24.1.2
-  description: SwaggerHub API Auto Mocking
+- url: https://swseurostone.github.io/Eurostone.Webshop.Api.Document/
+  description: Api dokumentáció
 tags:
 - name: Partner
   description: Partner műveletek
