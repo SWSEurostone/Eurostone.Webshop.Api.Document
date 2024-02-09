@@ -3,7 +3,7 @@ window.onload = function() {
 
   // the following lines will be replaced by docker/configurator, when it runs in a docker-container
   window.ui = SwaggerUIBundle({
-    url: "dist/Eurostone.Webshop.Api.24.1.2.yaml",
+    url: "dist/Eurostone.Webshop.Api.Document.yaml",
     dom_id: '#swagger-ui',
     deepLinking: true,
     presets: [
