@@ -1,0 +1,226 @@
+openapi: 3.0.1
+info:
+  title: Eurostone.Webshop.API
+  description: Harmadik fél számára nyújt elérhetőséget a Eurostone rendszerhez.
+  contact:
+    email: helpdesk@eurostone.hu
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 24.1.2
+# servers:
+# - url: https://swseurostone.github.io/Eurostone.Webshop.Api.Document/
+#   description: Api dokumentáció
+tags:
+- name: Partner
+  description: Partner műveletek
+- name: Lista Panel
+  description: Lista panel műveletek
+
+#Végpontok  
+paths:
+  /api/v1/partner/partnerInsert:
+    post:
+      tags:
+        - Partner
+      description: Partner felvétele a Partner törzsbe
+      requestBody:
+        description: Partner törzs egy tétele
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnerInsertRequest'
+      responses:
+        "200":
+          description: Partner felvétel sikerült
+        "400":
+          description: "invalid input, object invalid"
+        "409":
+          description: an existing item already exists
+  /api/v1/eslist/query:
+    get:
+      tags:
+        - Lista Panel
+      description: Listapanel adat lekérés
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListPanelQueryRequest'
+      responses:
+        "200":
+          description: Lekérdezés sikeres
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListPanelSuccessResponse'
+  /api/v1/eslist/{panelId}/fields:
+    get:
+      tags:
+          - Lista Panel
+      description: Adott lista panel mezőinek lekérése
+      parameters:
+        - name: panelId
+          in: path
+          schema:
+            type: integer
+          required: true
+      responses:
+        "200":
+          description: Kérés sikeres.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+        "400": 
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+        "409":
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/OperationResponse'
+# Objektumok
+components:
+  schemas:
+    PartnerInsertRequest:
+      required:
+      - InvoiceCity
+      - InvoiceCountry
+      - InvoiceStreet
+      - InvoiceZip
+      - PartnerName
+      - PartnerPaytypeId
+      - PrivatePerson
+      type: object
+      properties:
+        PartnerName:
+          type: string
+          description: "Partner neve, ami a számlára kerül"
+          example: Teszt partner
+        PartnerShortname:
+          type: string
+          description: "Partner neve rövidítve, ha nincs megadva akkor megegyezik a PartnerName mezővel"
+          example: TPT
+        PartnerPaytypeId:
+          type: string
+          description: Partner alapértelmezett fizetési módja
+          example: 1-2
+        PrivatePerson:
+          type: boolean
+          description: A partner magánszemély
+          example: true
+        TaxNumber:
+          type: string
+          description: "Adószám, megadása kötelező, ha a partner nem magánszemély"
+          example: 12345678-9-10
+        ContoNumber:
+          type: string
+          description: Partner bankszámlaszáma
+        InvoiceCountryId:
+          type: string
+          description: Számlázási cím országkódja
+          example: HU
+        InvoiceZip:
+          type: string
+          description: Számlázási cím irányítószám
+        InvoiceCity:
+          type: string
+          description: Számlázási cím helység
+        InvoiceStreet:
+          type: string
+          description: Számlázási cím közterület
+        InvoiceNumber:
+          type: string
+          description: Számlázási cím házszám
+        Phone:
+          type: string
+          description: Partner telefonszáma
+        Email:
+          type: string
+          description: Partner email címe
+        SiteCountryId:
+          type: string
+          description: Telephely cím országkódja
+          example: HU
+        SiteZip:
+          type: string
+          description: Telephely cím irányítószáma
+        SiteCity:
+          type: string
+          description: Telephely cím helység
+        SiteStreet:
+          type: string
+          description: Telephely cím közterület
+        SiteNumber:
+          type: string
+          description: Telephely cím házszáma
+        SitePhone:
+          type: string
+          description: Telephely telefonszáma
+        SiteEmail:
+          type: string
+          description: Telephely email címe
+      description: Partner létrehozásához modell.
+    ListPanelSuccessResponse:
+      type: object
+      properties:
+        Data:
+          type: string
+      description: Listapanel sikeres visszatérés
+    ListPanelQueryRequest:
+      required:
+      - ListPanelId
+      type: object
+      properties:
+        ListPanelId:
+          type: integer
+          description: Listapanel azonosítója
+          format: int32
+        Filter:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListPanelFilter'
+      description: Listapanel lekérdezés törzse
+    ListPanelFilter:
+      type: object
+      properties:
+        FieldName:
+          type: string
+          description: "Mező, amit szűr."
+        FieldValue:
+          type: object
+          description: "Érték, amire szűr."
+      description: A szűrés feltétele.
+    OperationResponse:
+      type: object
+      properties:
+        ResponseCode:
+          type: string
+          description: Hibás válasz esetén a hiba kódja, egyébként üres.
+        Message:
+          type: string
+          description: Üzenet magyarul.
+        MessageEN:
+          type: string
+          description: Üzenet angolul.
+        Details:
+          type: string
+          description: Hiba esetén a hiba okának részletes leírása, egyébként üres.
+        content:
+          type: object
+          description: Ha a válasznak tartalmaznia kell valamilyen tartalmat, akkor ebben van, egyébként üres.
+        StatusCode:
+          type: integer
+          description: Kérés eredménye HTTP válaszkód szerint
+    ErrorCodes:
+      type: string
+      enum:
+         - E001: Token nem található, vagy a Tokennel nincs aktív session.
+         - E002: A kérés feldolgozása sikertelen.
+         - E003: A kérés feldolgozása közben kivétel keletkezett.
+        
