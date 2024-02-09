@@ -32,11 +32,29 @@ paths:
               $ref: '#/components/schemas/PartnerInsertRequest'
       responses:
         "200":
-          description: Partner felvétel sikerült
-        "400":
-          description: "invalid input, object invalid"
-        "409":
-          description: an existing item already exists
+          description: Partner létrehozás sikeres.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+        "400": 
+          description: Partner létrehozás sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+        "401": 
+          description: Partner létrehozás sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+        "422":
+          description: Partner létrehozás sikertelen.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/OperationResponse'
   /api/v1/eslist/query:
     get:
       tags:
@@ -53,7 +71,25 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListPanelSuccessResponse'
+                $ref: '#/components/schemas/OperationResponse'
+        "400": 
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+        "401": 
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+        "422":
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/OperationResponse'
   /api/v1/eslist/{panelId}/fields:
     get:
       tags:
@@ -96,7 +132,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationResponse'
-        "409":
+        "401": 
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+        "422":
           description: Kérés sikertelen.
           content:
             application/json:
@@ -184,12 +226,12 @@ components:
           type: string
           description: Telephely email címe
       description: Partner létrehozásához modell.
-    ListPanelSuccessResponse:
-      type: object
-      properties:
-        Data:
-          type: string
-      description: Listapanel sikeres visszatérés
+    # ListPanelSuccessResponse:
+    #   type: object
+    #   properties:
+    #     Data:
+    #       type: string
+    #   description: Listapanel sikeres visszatérés
     ListPanelQueryRequest:
       required:
       - ListPanelId
