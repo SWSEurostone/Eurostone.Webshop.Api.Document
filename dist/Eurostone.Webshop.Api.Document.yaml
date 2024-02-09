@@ -74,21 +74,21 @@ paths:
                 $ref: '#/components/schemas/OperationResponse'
                 example: 
                   {
-                    "responseCode": null,
-                    "message": null,
-                    "messageEN": null,
-                    "details": null,
-                    "content": {
-                        "Fields": [
-                            "Partner_Id",
-                            "Partner_Name",
-                            "Partner_Code",
+                    responseCode: null,
+                    message: null,
+                    messageEN: null,
+                    details: null,
+                    content: {
+                        Fields: [
+                            Partner_Id,
+                            Partner_Name,
+                            Partner_Code,
                             .
                             .
                             .
                         ]
                     },
-                    "statusCode": 200
+                    statusCode: 200
                 }
         "400": 
           description: Kérés sikertelen.
