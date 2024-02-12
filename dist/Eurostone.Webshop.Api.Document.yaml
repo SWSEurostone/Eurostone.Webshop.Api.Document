@@ -59,7 +59,7 @@ paths:
     get:
       tags:
         - Lista Panel
-      description: Listapanel adat lekérés. Lehet mező szűréssel, vagy szűrés nélkül. A "Filter" mező TÖMBként viselkedik, több mezőre is lehet egyszerre szűrni, ÉS kapcsolat lesz közöttük.
+      description: Listapanel adat lekérés. Lehet mező szűréssel, vagy szűrés nélkül. A "Filter" mező TÖMBként viselkedik, több mezőre is lehet egyszerre szűrni, ÉS kapcsolat lesz közöttük. Dátum mezőre szűrés (a field nevéveben van 'date') esetén lehet intervallumot is megadni.
       requestBody:
         content:
           application/json:
@@ -68,20 +68,20 @@ paths:
             examples:
               Szűrés nélkül:
                 value:
-                  ListPanelId: 1,
+                  ListPanelId: 1
                   Filter: null
               Szűréssel:
                 value:
-                  ListPanelId: 1,
+                  ListPanelId: 1
                   Filter: 
-                    FieldName: Partner_Id,
+                    FieldName: Partner_Id
                     FilterValue: 1-1
               Dátum szűréssel (intervallum):
                 value:
-                  ListPanelId: 5,
+                  ListPanelId: 5
                   Filter:
-                    FieldName: Date_Execution,
-                    IntervalBegin: 2023-12-01,
+                    FieldName: Date_Execution
+                    IntervalBegin: 2023-12-01
                     IntervalEnd: 2023-12-31
       responses:
         "200":
@@ -91,10 +91,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/OperationResponse'
               example:
-                  responseCode: null,
-                  message: null,
-                  messageEN: null,
-                  details: null,
+                  responseCode: null
+                  message: null
+                  messageEN: null
+                  details: null
                   content: {
                       Data: [{
                             Partner_Id: 1-1,
@@ -121,8 +121,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/OperationResponse'
               example:
-                responseCode: Hibakód,
-                details: A hibakódhozhoz tartozó üzenet,
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
                 statusCode: 400
         "401": 
           description: Kérés sikertelen.
@@ -131,8 +131,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/OperationResponse'
               example:
-                responseCode: Hibakód,
-                details: A hibakódhozhoz tartozó üzenet,
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
                 statusCode: 401
         "422":
           description: Kérés sikertelen.
@@ -141,8 +141,8 @@ paths:
               schema: 
                 $ref: '#/components/schemas/OperationResponse'
               example:
-                responseCode: Hibakód,
-                details: A hibakódhozhoz tartozó üzenet,
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
                 statusCode: 422
   /api/v1/eslist/{panelId}/fields:
     get:
@@ -163,15 +163,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/OperationResponse'
               example: 
-                  responseCode: null,
-                  message: null,
-                  messageEN: null,
-                  details: null,
+                  responseCode: null
+                  message: null
+                  messageEN: null
+                  details: null
                   content: {
                       Fields: [
-                          Partner_Id,
-                          Partner_Name,
-                          Partner_Code,
+                          Partner_Id
+                          Partner_Name
+                          Partner_Code
                           .
                           .
                           .
@@ -185,8 +185,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/OperationResponse'
               example:
-                responseCode: Hibakód,
-                details: A hibakódhozhoz tartozó üzenet,
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
                 statusCode: 400
         "401": 
           description: Kérés sikertelen.
@@ -195,8 +195,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/OperationResponse'
               example:
-                responseCode: Hibakód,
-                details: A hibakódhozhoz tartozó üzenet,
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
                 statusCode: 401
         "422":
           description: Kérés sikertelen.
@@ -205,8 +205,8 @@ paths:
               schema: 
                 $ref: '#/components/schemas/OperationResponse'
               example:
-                responseCode: Hibakód,
-                details: A hibakódhozhoz tartozó üzenet,
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
                 statusCode: 422
 # Objektumok
 components:
