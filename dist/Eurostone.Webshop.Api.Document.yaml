@@ -109,7 +109,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/OperationResponse'
               example: 
-                {
                   responseCode: null,
                   message: null,
                   messageEN: null,
@@ -123,9 +122,8 @@ paths:
                           .
                           .
                       ]
-                  },
+                  }
                   statusCode: 200
-                }
         "400": 
           description: Kérés sikertelen.
           content:
