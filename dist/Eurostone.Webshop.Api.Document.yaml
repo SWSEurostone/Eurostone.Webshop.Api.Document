@@ -229,7 +229,7 @@ paths:
               $ref: '#/components/schemas/OrderRequest'
             example: {
               PartnerId: "1-1",
-              OwnerDescription: 1122-787848aaabbb,
+              OwnerDescription: "1122-787848aaabbb",
               HeadDescription: null,
               CountryCode: "HU",
               PostalZip: 1111,
