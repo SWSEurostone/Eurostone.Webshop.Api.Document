@@ -442,6 +442,10 @@ components:
           description: Telephely email címe
       description: Partner létrehozásához modell.
     OrderRequest:
+      required:
+        - PartnerId
+        - OwnerDescription
+        - Items
       description: Bizonylat rögzítés modell.
       properties:
         PartnerId: 
@@ -486,6 +490,10 @@ components:
             $ref: '#/components/schemas/OrderItem'
           description: Bizonylatra kerülő tételek
     OrderItem:
+      required:
+        - ArticleId
+        - Volume
+        - Price
       description: Bizonylat rögzítés tétel modell.
       properties:
         ArticleId:
