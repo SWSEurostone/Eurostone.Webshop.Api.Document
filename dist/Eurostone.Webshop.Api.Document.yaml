@@ -7,7 +7,7 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 24.1.3
+  version: 24.3.74
 # servers:
 # - url: https://swseurostone.github.io/Eurostone.Webshop.Api.Document/
 #   description: Api dokumentáció
@@ -57,6 +57,38 @@ paths:
             application/json:
               schema: 
                 $ref: '#/components/schemas/OperationResponse'
+              examples:
+                Rögzítés közben váratlan hiba:
+                  value:
+                    responseCode: E012
+                    message: "A partner rögzítése közben meghatározhatatlan hiba történt!."
+                    statusCode: 422
+                Adószám nincs megadva:
+                  value:
+                    responseCode: E013
+                    message: "Érvénytelen/Nem létező adószám. (adószám)"
+                    statusCode: 422
+                Adószám megadva, NAV hiba:
+                  value:
+                    responseCode: E014
+                    message: "NAV által visszaadott üzenet"
+                    statusCode: 422
+                Adószám létezik:
+                  value:
+                    responseCode: E015
+                    message: "A megadott adószámmal már van partner a rendszerben. (adószám)"
+                    statusCode: 422
+                Magánszemély, email létezik:
+                  value:
+                    responseCode: E016
+                    message: "A megadott email cím már rögzítve van a Partner törzsben. (email)"
+                    statusCode: 422
+                Nincs név:
+                  value:
+                    responseCode: E017
+                    message: "A partner neve nem lehet üres."
+                    statusCode: 422
+                
   /api/v1/eslist/query:
     get:
       tags:
@@ -580,4 +612,9 @@ components:
          - E009: Bizonylat tételek nem kerültek a bizonylatra
          - E010: Bizonylat ellenőrzés közben hiba
          - E011: Bizonylat rögzítés hiányzó cikk
-        
+         - E012: Partner rögzítés ismeretlen hiba
+         - E013: Partner rögzítés adószám hiányzik
+         - E014: Partner rögzítés NAV szerint nem jó az adószám
+         - E015: Partner rögzítés az adószám már rögzítve van a rendszerben
+         - E016: Partner rögzítés az email cím már rögzítve van a rendszerben
+         - E017: Partner rögzítés a partner neve nincs megadva
