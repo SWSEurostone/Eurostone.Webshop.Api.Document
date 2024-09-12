@@ -7,15 +7,17 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 24.1.2
+  version: 24.3.74
 # servers:
 # - url: https://swseurostone.github.io/Eurostone.Webshop.Api.Document/
 #   description: Api dokumentáció
 tags:
 - name: Partner
-  description: Partner műveletek
+  description: Partner műveletek.
 - name: Lista Panel
-  description: Lista panel műveletek
+  description: Lista panel műveletek.
+- name: Bizonylat
+  description: Bizonylat rögzítés művelete.
 
 #Végpontok  
 paths:
@@ -32,33 +34,161 @@ paths:
               $ref: '#/components/schemas/PartnerInsertRequest'
       responses:
         "200":
-          description: Partner felvétel sikerült
-        "400":
-          description: "invalid input, object invalid"
-        "409":
-          description: an existing item already exists
+          description: Partner létrehozás sikeres.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+        "400": 
+          description: Partner létrehozás sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+        "401": 
+          description: Partner létrehozás sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+        "422":
+          description: Partner létrehozás sikertelen.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/OperationResponse'
+              examples:
+                Rögzítés közben váratlan hiba:
+                  value:
+                    responseCode: E012
+                    message: "A partner rögzítése közben meghatározhatatlan hiba történt!."
+                    statusCode: 422
+                Adószám nincs megadva:
+                  value:
+                    responseCode: E013
+                    message: "Érvénytelen/Nem létező adószám. (adószám)"
+                    statusCode: 422
+                Adószám megadva, NAV hiba:
+                  value:
+                    responseCode: E014
+                    message: "NAV által visszaadott üzenet"
+                    statusCode: 422
+                Adószám létezik:
+                  value:
+                    responseCode: E015
+                    message: "A megadott adószámmal már van partner a rendszerben. (adószám)"
+                    statusCode: 422
+                Magánszemély, email létezik:
+                  value:
+                    responseCode: E016
+                    message: "A megadott email cím már rögzítve van a Partner törzsben. (email)"
+                    statusCode: 422
+                Nincs név:
+                  value:
+                    responseCode: E017
+                    message: "A partner neve nem lehet üres."
+                    statusCode: 422
+                
   /api/v1/eslist/query:
     get:
       tags:
         - Lista Panel
-      description: Listapanel adat lekérés
+      description: Listapanel adat lekérés. Lehet mező szűréssel, vagy szűrés nélkül. A "Filter" mező TÖMBként viselkedik, több mezőre is lehet egyszerre szűrni, ÉS kapcsolat lesz közöttük. Dátum mezőre szűrés (a field nevéveben van 'date') esetén lehet intervallumot is megadni.
       requestBody:
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/ListPanelQueryRequest'
+            examples:
+              Szűrés nélkül:
+                value:
+                  ListPanelId: 1
+                  Filter: null
+              Szűréssel:
+                value:
+                  ListPanelId: 1
+                  Filter: [
+                    {
+                      FieldName: Partner_Id,
+                      FilterValue: 1-1
+                    }
+                  ]
+              Dátum szűréssel (intervallum):
+                value:
+                  ListPanelId: 5
+                  Filter: [
+                    {
+                      FieldName: Date_Execution,
+                      IntervalBegin: 2023-12-01,
+                      IntervalEnd: 2023-12-31
+                    }
+                  ]
       responses:
         "200":
           description: Lekérdezés sikeres
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListPanelSuccessResponse'
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                  responseCode: null
+                  message: null
+                  messageEN: null
+                  details: null
+                  content: {
+                      Data: [{
+                            Partner_Id: 1-1,
+                            Partner_Name: A nevem,
+                            Partner_Code: 25,
+                            .
+                            .
+                            .
+                          },
+                          {
+                            Partner_Id: 1-2,
+                            Partner_Name: Másik vagyok,
+                            Partner_Code: 26,
+                            .
+                            .
+                            .
+                          }]
+                  }
+                  statusCode: 200
+        "400": 
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
+                statusCode: 400
+        "401": 
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
+                statusCode: 401
+        "422":
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
+                statusCode: 422
   /api/v1/eslist/{panelId}/fields:
     get:
       tags:
           - Lista Panel
-      description: Adott lista panel mezőinek lekérése
+      description: Adott lista panel mezőinek lekérdezése.
       parameters:
         - name: panelId
           in: path
@@ -72,18 +202,195 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationResponse'
+              example: 
+                  responseCode: null
+                  message: null
+                  messageEN: null
+                  details: null
+                  content: {
+                      Fields: [
+                          Partner_Id
+                          Partner_Name
+                          Partner_Code
+                          .
+                          .
+                          .
+                      ]
+                  }
+                  statusCode: 200
         "400": 
           description: Kérés sikertelen.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationResponse'
-        "409":
+              example:
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
+                statusCode: 400
+        "401": 
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
+                statusCode: 401
+        "422":
           description: Kérés sikertelen.
           content:
             application/json:
               schema: 
                 $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
+                statusCode: 422
+  /api/v1/voucher/orderInsert:
+    post:
+      tags:
+        - Bizonylat
+      description: Rendelés rögzítése vállalat irányítási rendszerben.
+      requestBody:
+        description: Bizonylat létrehozás modell.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+            example: {
+              PartnerId: "1-1",
+              OwnerDescription: "1122-787848aaabbb",
+              HeadDescription: null,
+              CountryCode: "HU",
+              PostalZip: 1111,
+              PostalCity: "Város",
+              PostalStreet: "Közterület",
+              PostalNumber: 33,
+              FootDescription: "Kupon 25%",
+              PartnerPaytypeId: "1-52",
+              PartnerShiptypeId: "1-2",
+              Items: [
+                {
+                  ArticleId: "1-25063",
+                  Volume: 1,
+                  Comment: null,
+                  Price: 234.4
+                },
+                {
+                  ArticleId: "1-8580",
+                  Volume: 3,
+                  Comment: "Kupon 25%",
+                  Price: 450
+                }
+              ]
+            }
+              
+      responses:
+        "200":
+          description: Bizonylat létrehozás sikeres.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              examples: 
+                Sikeres új:
+                  value:
+                    responseCode: null
+                    message: null
+                    messageEN: null
+                    details: null
+                    content: {
+                        PaperNumber: "W4-2024/5558"
+                    }
+                    statusCode: 200
+                Sikeres létező:
+                  value:
+                    responseCode: E008
+                    message: A 356054545 belső azonosítóval korábban már rögzült bizonylat.
+                    messageEN: null
+                    details: Az átadott belső azonosítóval korábban már rögzült bizonylat.
+                    content: {
+                      PaperNumber: "WR-2024/22"
+                    }
+                    statusCode: 200
+        "400": 
+          description: Bizonylat létrehozás sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: E003
+                message: A kérés feldolgozása közben kivétel keletkezett.
+                messageEN: null,
+                details: Exception message
+                content: null
+                statusCode: 400
+        "401": 
+          description: Bizonylat létrehozás sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: E001
+                message: null
+                messageEN: null,
+                details: A kérés feldolgozása sikertelen.
+                content: null
+                statusCode: 401
+        "422":
+          description: Bizonylat létrehozás sikertelen.
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/OperationResponse'
+              examples:
+                Paraméter vagy bizonylat típus:
+                  value:
+                    responseCode: E004
+                    message: "Új bizonylat rögzítéséhez szükséges paraméter nincs beállítva."
+                    messageEN: null
+                    details: "A bizonylat létrehozásához nincs megadva a bizonylat típus."
+                    statusCode: 422 
+                Rögzítés közben kivétel:
+                  value:
+                    responseCode: E005
+                    message: "Bizonylat rögzítés közben belső hiba lépett fel."
+                    messageEN: null
+                    details: Exception
+                    statusCode: 422 
+                Nincs rögzítendő adat:
+                  value:
+                    responseCode: E006
+                    message: "A bizonylat létrehozáshoz a lista nem tartalmaz elemet, vagy a forrás hibás."
+                    messageEN: null
+                    details: "A bizonylat létrehozáshoz a lista nem tartalmaz elemet, vagy a forrás hibás."
+                    statusCode: 422 
+                Nem létező partner:
+                  value:
+                    responseCode: E007
+                    message: "A bizonylat létrehozáshoz átadott partner azonosítóval nem található Partner a törzsben."
+                    messageEN: null
+                    details: "A bizonylat létrehozáshoz átadott partner azonosítóval nem található Partner a törzsben."
+                    statusCode: 422 
+                Ellenőrzés közben hiba:
+                  value:
+                    responseCode: E010
+                    message: "Bizonylat ellenőrzés/rögzítés közben hiba lépett fel."
+                    messageEN: null
+                    details: "Bizonylat ellenőrzés/rögzítés közben hiba lépett fel."
+                    statusCode: 422 
+                Hiányzó cikk:
+                  value:
+                    responseCode: E011
+                    message: "A kapott cikk azonosító üres, vagy nem létezik."
+                    messageEN: null
+                    details: "Az egyik cikk azonosító nem létezik a Cikk törzsben."
+                    statusCode: 422 
+
 # Objektumok
 components:
   schemas:
@@ -166,12 +473,80 @@ components:
           type: string
           description: Telephely email címe
       description: Partner létrehozásához modell.
-    ListPanelSuccessResponse:
-      type: object
+    OrderRequest:
+      required:
+        - PartnerId
+        - OwnerDescription
+        - Items
+      description: Bizonylat rögzítés modell.
       properties:
-        Data:
+        PartnerId: 
           type: string
-      description: Listapanel sikeres visszatérés
+          description: Partner azonosító, akinek készül a bizonylat.
+        OwnerDescription:
+          type: string
+          description: Belső megjegyzés, bizonylaton megjelenik, de nem kerül nyomtatásra. A jelenlegi webáruházban leadott rendelés száma kerül bele.
+        HeadDescription:
+          type: string
+          description: Bizonylat fejrész megjegyzés, nyomtatásra kerül.
+        CountryCode:
+          type: string
+          description: Országkód
+        PostalZip:
+          type: string
+          description: Szállítási cím irányítószáma
+        PostalCity:
+          type: string
+          description: Szállítási cím város
+        PostalStreet:
+          type: string
+          description: Szállítási cím közterület
+        PostalNumber:
+          type: string
+          description: Szállítási cím házszám
+        DateExecution:
+          type: object
+          description: Bizonylat teljesítés dátuma
+        FootDescription:
+          type: string
+          description: Lábjegyzet, nyomatatásra kerül
+        PartnerPaytypeId:
+          type: string
+          description: Fizetési mód
+        PartnerShiptypeId:
+          type: string
+          description: Szállítási mód
+        Items: 
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          description: Bizonylatra kerülő tételek
+    OrderItem:
+      required:
+        - ArticleId
+        - Volume
+        - Price
+      description: Bizonylat rögzítés tétel modell.
+      properties:
+        ArticleId:
+          type: string
+          description: Cikk/termék/áru belső azonosítója
+        Volume:
+          type: object
+          description: Mennyiség (nem egész numerikus)
+        Comment:
+          type: string
+          description: Megjegyzés
+        Price:
+          type: object
+          description: Tétel egységára (nem egész numerikus)
+        
+    # ListPanelSuccessResponse:
+    #   type: object
+    #   properties:
+    #     Data:
+    #       type: string
+    #   description: Listapanel sikeres visszatérés
     ListPanelQueryRequest:
       required:
       - ListPanelId
@@ -191,10 +566,16 @@ components:
       properties:
         FieldName:
           type: string
-          description: "Mező, amit szűr."
-        FieldValue:
+          description: Mező, amit szűr.
+        FilterValue:
           type: object
-          description: "Érték, amire szűr."
+          description: Érték, amire szűr.
+        IntervalBegin:
+          type: object
+          description: Dátum szűrés kezdő érték
+        IntervalEnd: 
+          type: object
+          description: Dátum szűrés záró érték
       description: A szűrés feltétele.
     OperationResponse:
       type: object
@@ -223,4 +604,17 @@ components:
          - E001: Token nem található, vagy a Tokennel nincs aktív session.
          - E002: A kérés feldolgozása sikertelen.
          - E003: A kérés feldolgozása közben kivétel keletkezett.
-        
+         - E004: Új bizonylat rögzítéséhez szükséges paraméter nincs beállítva.
+         - E005: Bizonylat rögzítés közben belső hiba lépett fel.
+         - E006: Nincs rögzítendő adat 
+         - E007: Hiányzó partner bizonylat rögzítéshez
+         - E008: Azonos rendelésszám
+         - E009: Bizonylat tételek nem kerültek a bizonylatra
+         - E010: Bizonylat ellenőrzés közben hiba
+         - E011: Bizonylat rögzítés hiányzó cikk
+         - E012: Partner rögzítés ismeretlen hiba
+         - E013: Partner rögzítés adószám hiányzik
+         - E014: Partner rögzítés NAV szerint nem jó az adószám
+         - E015: Partner rögzítés az adószám már rögzítve van a rendszerben
+         - E016: Partner rögzítés az email cím már rögzítve van a rendszerben
+         - E017: Partner rögzítés a partner neve nincs megadva
