@@ -501,22 +501,22 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserMenuTree'
             example: [
-              {
-                nodeId: 1,
-                rootId: null,
-                caption: "WEB",
-                nodeName: "WEB",
-                esListId: null,
-                externalUrl: null
-              },
-              {
-                nodeId: 2,
-                rootId: 1,
-                caption: "Belföldi áru - Mennyiség szerint",
-                nodeName: "InternalWareByVolume.1",
-                esListId: 1,
-                externalUrl: null                
-              }
+                {
+                  nodeId: 1,
+                  rootId: null,
+                  caption: "WEB",
+                  nodeName: "WEB",
+                  esListId: null,
+                  externalUrl: null
+                },
+                {
+                  nodeId: 2,
+                  rootId: 1,
+                  caption: "Belföldi áru - Mennyiség szerint",
+                  nodeName: "InternalWareByVolume.1",
+                  esListId: 1,
+                  externalUrl: null                
+                }
             ]
         "401":
           description: Menüfa lekérése sikertelen.
