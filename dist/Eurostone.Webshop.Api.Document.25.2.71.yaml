@@ -9,11 +9,11 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 25.2.71
 # servers:
-# - url: https://swseurostone.github.io/Eurostone.Webshop.Api.Document/
+# - url: https://webshopdev.fpr.eurostone.hu
 #   description: Api dokumentáció
 tags:
-  - name: Partner
-    description: Partner műveletek.
+  #- name: Partner
+  #  description: Partner műveletek.
   - name: Lista Panel
     description: Lista panel műveletek.
   - name: Bizonylat
@@ -25,79 +25,81 @@ tags:
 
 #Végpontok  
 paths:
-  /api/v1/partner/partnerInsert:
-    post:
-      tags:
-        - Partner
-      description: Partner felvétele a Partner törzsbe
-      requestBody:
-        description: Partner törzs egy tétele
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PartnerInsertRequest'
-      responses:
-        "200":
-          description: Partner létrehozás sikeres.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationResponse'
-        "400":
-          description: Partner létrehozás sikertelen.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationResponse'
-        "401":
-          description: Partner létrehozás sikertelen.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationResponse'
-        "422":
-          description: Partner létrehozás sikertelen.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationResponse'
-              examples:
-                Rögzítés közben váratlan hiba:
-                  value:
-                    responseCode: E012
-                    message: "A partner rögzítése közben meghatározhatatlan hiba történt!."
-                    statusCode: 422
-                Adószám nincs megadva:
-                  value:
-                    responseCode: E013
-                    message: "Érvénytelen/Nem létező adószám. (adószám)"
-                    statusCode: 422
-                Adószám megadva, NAV hiba:
-                  value:
-                    responseCode: E014
-                    message: "NAV által visszaadott üzenet"
-                    statusCode: 422
-                Adószám létezik:
-                  value:
-                    responseCode: E015
-                    message: "A megadott adószámmal már van partner a rendszerben. (adószám)"
-                    statusCode: 422
-                Magánszemély, email létezik:
-                  value:
-                    responseCode: E016
-                    message: "A megadott email cím már rögzítve van a Partner törzsben. (email)"
-                    statusCode: 422
-                Nincs név:
-                  value:
-                    responseCode: E017
-                    message: "A partner neve nem lehet üres."
-                    statusCode: 422
+#  /api/v1/partner/partnerInsert:
+#    post:
+#      tags:
+#        - Partner
+#      description: Partner felvétele a Partner törzsbe
+#      requestBody:
+#        description: Partner törzs egy tétele
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/PartnerInsertRequest'
+#      responses:
+#        "200":
+#          description: Partner létrehozás sikeres.
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/OperationResponse'
+#        "400":
+#          description: Partner létrehozás sikertelen.
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/OperationResponse'
+#        "401":
+#          description: Partner létrehozás sikertelen.
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/OperationResponse'
+#        "422":
+#          description: Partner létrehozás sikertelen.
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/OperationResponse'
+#              examples:
+#                Rögzítés közben váratlan hiba:
+#                  value:
+#                    responseCode: E012
+#                    message: "A partner rögzítése közben meghatározhatatlan hiba történt!."
+#                    statusCode: 422
+#                Adószám nincs megadva:
+#                  value:
+#                    responseCode: E013
+#                    message: "Érvénytelen/Nem létező adószám. (adószám)"
+#                    statusCode: 422
+#                Adószám megadva, NAV hiba:
+#                  value:
+#                    responseCode: E014
+#                    message: "NAV által visszaadott üzenet"
+#                    statusCode: 422
+#                Adószám létezik:
+#                  value:
+#                    responseCode: E015
+#                    message: "A megadott adószámmal már van partner a rendszerben. (adószám)"
+#                    statusCode: 422
+#                Magánszemély, email létezik:
+#                  value:
+#                    responseCode: E016
+#                    message: "A megadott email cím már rögzítve van a Partner törzsben. (email)"
+#                    statusCode: 422
+#                Nincs név:
+#                  value:
+#                    responseCode: E017
+#                    message: "A partner neve nem lehet üres."
+#                    statusCode: 422
   
   /api/v1/eslist/query:
     get:
       tags:
         - Lista Panel
       description: Listapanel adat lekérés. Lehet mező szűréssel, vagy szűrés nélkül. A "Filter" mező TÖMBként viselkedik, több mezőre is lehet egyszerre szűrni, ÉS kapcsolat lesz közöttük. Dátum mezőre szűrés (a field nevéveben van 'date') esetén lehet intervallumot is megadni.
+      security:
+        - bearerAuth: []
       requestBody:
         content:
           application/json:
@@ -188,11 +190,13 @@ paths:
                 responseCode: Hibakód
                 details: A hibakódhozhoz tartozó üzenet
                 statusCode: 422
-  /api/v1/eslist/{panelId}/fields:
+  /api/v2/eslist/{panelId}/fields:
     get:
       tags:
         - Lista Panel
-      description: Adott lista panel mezőinek lekérdezése.
+      description: Adott lista panel mezői, kiegészítve a hívható műveletekkel.
+      security:
+        - bearerAuth: []      
       parameters:
         - name: panelId
           in: path
@@ -212,13 +216,24 @@ paths:
                 messageEN: null
                 details: null
                 content: {
-                  Fields: [
-                    Partner_Id
-                      Partner_Name
-                      Partner_Code
-                      .
-                      .
-                      .
+                  updateUrl: "POST ...",
+                  layout: null,
+                  esObjectId: 5,
+                  fields: [
+                    {
+                      listFieldName:,
+                      objectId:,
+                      fieldCaption:,
+                      etc...:
+                    }
+                  ],
+                  operations: [
+                    {
+                      operationCaptionHU:,
+                      operationDescription:,
+                      operationAddress:,
+                      contentType:
+                    }
                   ]
                 }
                 statusCode: 200
@@ -252,154 +267,98 @@ paths:
                 responseCode: Hibakód
                 details: A hibakódhozhoz tartozó üzenet
                 statusCode: 422
-  /api/v1/voucher/orderInsert:
-    post:
-      tags:
-        - Bizonylat
-      description: Rendelés rögzítése vállalat irányítási rendszerben.
-      requestBody:
-        description: Bizonylat létrehozás modell.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/OrderRequest'
-            example: {
-              PartnerId: "1-1",
-              OwnerDescription: "1122-787848aaabbb",
-              HeadDescription: null,
-              CountryCode: "HU",
-              PostalZip: 1111,
-              PostalCity: "Város",
-              PostalStreet: "Közterület",
-              PostalNumber: 33,
-              FootDescription: "Kupon 25%",
-              PartnerPaytypeId: "1-52",
-              PartnerShiptypeId: "1-2",
-              Items: [
-                {
-                  ArticleId: "1-25063",
-                  Volume: 1,
-                  Comment: null,
-                  Price: 234.4
-                },
-                {
-                  ArticleId: "1-8580",
-                  Volume: 3,
-                  Comment: "Kupon 25%",
-                  Price: 450
-                }
-              ]
-            }
-      
+  /api/v2/eslist/{panelId}/data?skip=0&take=100&requiredtotalcount=true:
+    get:
+      tags: 
+        - Lista Panel
+      description: Adott listapanel adatainak lekérdezése, lapozási paraméterekkel.
+      security:
+        - bearerAuth: []      
+      parameters:
+        - name: panelId
+          in: path
+          schema: 
+            type: integer
+          required: true
+        - name: skip
+          description: a lekérdezés a lista elejéről ennyi sort hagyjon ki
+          in: query
+          schema: 
+            type: integer
+          required: false
+        - name: take
+          description: a lekérdezés ennyi sort adjon vissza
+          in: query
+          schema: 
+            type: integer
+          required: false
+        - name: requiredtotalcount
+          description: a lekérdezés visszaadja-e a teljes sor darabszámát
+          in: query
+          schema: 
+            type: boolean
+          required: false
       responses:
         "200":
-          description: Bizonylat létrehozás sikeres.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationResponse'
-              examples:
-                Sikeres új:
-                  value:
-                    responseCode: null
-                    message: null
-                    messageEN: null
-                    details: null
-                    content: {
-                      PaperNumber: "W4-2024/5558"
-                    }
-                    statusCode: 200
-                Sikeres létező:
-                  value:
-                    responseCode: E008
-                    message: A 356054545 belső azonosítóval korábban már rögzült bizonylat.
-                    messageEN: null
-                    details: Az átadott belső azonosítóval korábban már rögzült bizonylat.
-                    content: {
-                      PaperNumber: "WR-2024/22"
-                    }
-                    statusCode: 200
-        "400":
-          description: Bizonylat létrehozás sikertelen.
+          description: Kérés sikeres.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationResponse'
               example:
-                responseCode: E003
-                message: A kérés feldolgozása közben kivétel keletkezett.
-                messageEN: null,
-                details: Exception message
-                content: null
+                responseCode: null
+                message: null
+                messageEN: null
+                details: null
+                content: {
+                  data: [
+                    {
+                      rowId: 33,
+                      article_Id: ""
+                    },
+                    {
+                      rowId: 34,
+                      article_Id: ""
+                    }
+                  ],
+                  totalCount: 140
+                }
+                statusCode: 200          
+        "400":
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
                 statusCode: 400
         "401":
-          description: Bizonylat létrehozás sikertelen.
+          description: Kérés sikertelen.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationResponse'
               example:
-                responseCode: E001
-                message: null
-                messageEN: null,
-                details: A kérés feldolgozása sikertelen.
-                content: null
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
                 statusCode: 401
         "422":
-          description: Bizonylat létrehozás sikertelen.
+          description: Kérés sikertelen.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/OperationResponse'
-              examples:
-                Paraméter vagy bizonylat típus:
-                  value:
-                    responseCode: E004
-                    message: "Új bizonylat rögzítéséhez szükséges paraméter nincs beállítva."
-                    messageEN: null
-                    details: "A bizonylat létrehozásához nincs megadva a bizonylat típus."
-                    statusCode: 422
-                Rögzítés közben kivétel:
-                  value:
-                    responseCode: E005
-                    message: "Bizonylat rögzítés közben belső hiba lépett fel."
-                    messageEN: null
-                    details: Exception
-                    statusCode: 422
-                Nincs rögzítendő adat:
-                  value:
-                    responseCode: E006
-                    message: "A bizonylat létrehozáshoz a lista nem tartalmaz elemet, vagy a forrás hibás."
-                    messageEN: null
-                    details: "A bizonylat létrehozáshoz a lista nem tartalmaz elemet, vagy a forrás hibás."
-                    statusCode: 422
-                Nem létező partner:
-                  value:
-                    responseCode: E007
-                    message: "A bizonylat létrehozáshoz átadott partner azonosítóval nem található Partner a törzsben."
-                    messageEN: null
-                    details: "A bizonylat létrehozáshoz átadott partner azonosítóval nem található Partner a törzsben."
-                    statusCode: 422
-                Ellenőrzés közben hiba:
-                  value:
-                    responseCode: E010
-                    message: "Bizonylat ellenőrzés/rögzítés közben hiba lépett fel."
-                    messageEN: null
-                    details: "Bizonylat ellenőrzés/rögzítés közben hiba lépett fel."
-                    statusCode: 422
-                Hiányzó cikk:
-                  value:
-                    responseCode: E011
-                    message: "A kapott cikk azonosító üres, vagy nem létezik."
-                    messageEN: null
-                    details: "Az egyik cikk azonosító nem létezik a Cikk törzsben."
-                    statusCode: 422
-  /api/v1/voucher/dispoTruckTurnUpdate:
-    post:
-      tags:
-        - Bizonylat
-      description: Dispo bizonylathoz tehergépjármű(vek) (rendszám) forduló rögzítése
-  
+              example:
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
+                statusCode: 422
+#  /api/v1/voucher/dispoTruckTurnUpdate:
+#    post:
+#      tags:
+#        - Bizonylat
+#      description: Dispo bizonylathoz tehergépjármű(vek) (rendszám) forduló rögzítése
   /api/v2/basket/update:
     post:
       tags:
@@ -419,9 +378,19 @@ paths:
               GrossWeightPerUnit: 600,
               WareType: 11
             }
+      security:
+        - bearerAuth: []            
       responses:
         "200":
-          description: ""
+          description: "Kosár adat rögzítése sikeres"
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/OperationResponse'
+              example: 
+                message: "Kosár mentése sikeres."
+                content: 3821
+                statusCode: 200
         "400":
           description: Kosár rögzítése sikertelen.
           content:
@@ -448,10 +417,129 @@ paths:
                 details: Token nem található, vagy a Tokennel nincs aktív session.
                 content: null
                 statusCode: 401
-
-
+  /api/v2/basket/writesout:
+    post:
+      tags:
+        - Kosár
+      description: Kosár tartalmának kiírása bizonylatra
+      requestBody: 
+        description: Tartalom kiírás modell
+        content: 
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/BasketWritesOut"
+            example: {
+              PartnerId: "1-7441",
+              PartnerName: "Tehergépkocsi",
+              OwnerDescription: "belső",
+              HeadDescription: "ez minek is?",
+              CountryCode: "HU",
+              Country: "Hungary",
+              PartnerSiteId: null,
+              SiteZip: "6000",
+              SiteCity: "Kecskemét",
+              SiteStreet: "Izsáki út",
+              SiteNumber: "3",
+              DateExecute: "2025-06-19T00:00:00",
+              FootDescription: "ez lesz a láb",
+              EKAER: "ekaer nincs",
+              PoliceRegistration1: "AABB001",
+              PoliceRegistration2: null,
+              CurrentWizardType: 2              
+            }
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: "Kosár kiírás sikeres"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                message: "Bizonylat mentés sikeres."
+                content: "a bizonylat száma"
+                statusCode: 200
+        "400":
+          description: Kosár kiírás sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: E003
+                message: A kérés feldolgozása közben kivétel keletkezett.
+                messageEN: null,
+                details: Exception message
+                content: null
+                statusCode: 400
+        "401":
+          description: Kosár kiírás sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: E001
+                message: null
+                messageEN: null,
+                details: Token nem található, vagy a Tokennel nincs aktív session.
+                content: null
+                statusCode: 401            
+  /api/v2/common/usermenu:
+    get:
+      tags:
+        - Menü
+      description: A belépett felhasználó menüjét adja.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Sikeres menüfa kérés 
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserMenuTree'
+            example: [
+              {
+                nodeId: 1,
+                rootId: null,
+                caption: "WEB",
+                nodeName: "WEB",
+                esListId: null,
+                externalUrl: null
+              },
+              {
+                nodeId: 2,
+                rootId: 1,
+                caption: "Belföldi áru - Mennyiség szerint",
+                nodeName: "InternalWareByVolume.1",
+                esListId: 1,
+                externalUrl: null                
+              }
+            ]
+        "401":
+          description: Menüfa lekérése sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                {
+                  "ResponseCode": "E001",
+                  "Message": "A kérésben küldött Token érvénytelen",
+                  "MessageEN": null,
+                  "Details": "Status401Unauthorized",
+                  "Content": null,
+                  "StatusCode": 401
+                }
+      
 # Objektumok
 components:
+  securitySchemes: 
+    bearerAuth:
+      type: http
+      scheme: bearer
   schemas:
     PartnerInsertRequest:
       required:
@@ -626,7 +714,69 @@ components:
         WareType:
           type: integer
           description: A kosár tétel típusa
-    
+    BasketWritesOut:
+      description: Kosár tartalmának bizonylatra írás kérése. Ezek a fej adatok lesznek, a tétel(ek) a partnerId és a currentWizardType adja.
+      required: 
+        - PartnerId
+        - CurrentWizardType
+        - DateExecution
+        - SiteZip
+        - SiteCity
+        - SiteStreet
+        - SiteNumber
+        - LicencePlate1
+      properties: 
+        PartnerId:
+          type: string
+          description: Partner azonosítója
+        PartnerName:
+          type: string
+          description: Partner neve
+        OwnerDescription:
+          type: string
+          description: Bizonylat belső megjegyzés
+        HeadDescription:
+          type: string
+          description: Bizonylat fej megjegyzés 
+        CountryCode:
+          type: string
+          description: Országkód
+        Country: 
+          type: string
+          description: Ország
+        PartnerSiteId:
+          type: string
+          description: Telephely azonosító
+        SiteZip:
+          type: string
+          description: cím ir.szám
+        SiteCity:
+          type: string
+          description: cím város
+        SiteStreet: 
+          type: string
+          description: cím utca
+        SiteNumber:
+          type: string
+          description: cím házszám
+        DateExecution: 
+          type: date
+          description: Teljesítés dátuma
+        FootPrintDescription:
+          type: string
+          description: Bizonylaton lábjegyzet megjegyzés
+        EKAER:
+          type: string
+          description: EKAER szám, ha ismert
+        LicencePlate1:
+          type: string
+          description: rendszám (1) a teherautóhoz
+        LicencePlate2:
+          type: string
+          description: rendszám (2) a pótkocsihoz
+        CurrentWizardType:
+          type: integer
+          description: a kosár tartalmának a típusa
     TruckTurn:
       required:
         - DispoPaperId
@@ -686,6 +836,27 @@ components:
           type: object
           description: Dátum szűrés záró érték
       description: A szűrés feltétele.
+    UserMenuTree:
+      type: object
+      properties: 
+        NodeId:
+          type: integer
+          description: Ág azonosító
+        RootId:
+          type: integer
+          description: Az ág gyökerének az azonosítója, lehet null.
+        Caption:
+          type: string
+          description: Felirat
+        NodeName:
+          type: string
+          description: Egyedi név
+        ESListId:
+          type: integer
+          description: Ha listapanel, annak az azonosítója
+        ExternalUrl:
+          type: string
+          description: Ha külső címre kell navigálni
     OperationResponse:
       type: object
       properties:
