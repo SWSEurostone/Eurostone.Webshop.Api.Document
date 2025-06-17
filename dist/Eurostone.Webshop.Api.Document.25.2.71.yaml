@@ -16,8 +16,8 @@ tags:
   #  description: Partner műveletek.
   - name: Lista Panel
     description: Lista panel műveletek.
-  - name: Bizonylat
-    description: Bizonylat rögzítés művelete.
+#  - name: Bizonylat
+#    description: Bizonylat rögzítés művelete.
   - name: Kosár
     description: Eurostone kosár módosítás művelete
   - name: Menü
@@ -93,103 +93,103 @@ paths:
 #                    message: "A partner neve nem lehet üres."
 #                    statusCode: 422
   
-  /api/v1/eslist/query:
-    get:
-      tags:
-        - Lista Panel
-      description: Listapanel adat lekérés. Lehet mező szűréssel, vagy szűrés nélkül. A "Filter" mező TÖMBként viselkedik, több mezőre is lehet egyszerre szűrni, ÉS kapcsolat lesz közöttük. Dátum mezőre szűrés (a field nevéveben van 'date') esetén lehet intervallumot is megadni.
-      security:
-        - bearerAuth: []
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ListPanelQueryRequest'
-            examples:
-              Szűrés nélkül:
-                value:
-                  ListPanelId: 1
-                  Filter: null
-              Szűréssel:
-                value:
-                  ListPanelId: 1
-                  Filter: [
-                    {
-                      FieldName: Partner_Id,
-                      FilterValue: 1-1
-                    }
-                  ]
-              Dátum szűréssel (intervallum):
-                value:
-                  ListPanelId: 5
-                  Filter: [
-                    {
-                      FieldName: Date_Execution,
-                      IntervalBegin: 2023-12-01,
-                      IntervalEnd: 2023-12-31
-                    }
-                  ]
-      responses:
-        "200":
-          description: Lekérdezés sikeres
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationResponse'
-              example:
-                responseCode: null
-                message: null
-                messageEN: null
-                details: null
-                content: {
-                  Data: [{
-                    Partner_Id: 1-1,
-                    Partner_Name: A nevem,
-                    Partner_Code: 25,
-                           .
-                           .
-                           .
-                  },
-                    {
-                      Partner_Id: 1-2,
-                      Partner_Name: Másik vagyok,
-                      Partner_Code: 26,
-                      .
-                      .
-                      .
-                    }]
-                }
-                statusCode: 200
-        "400":
-          description: Kérés sikertelen.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationResponse'
-              example:
-                responseCode: Hibakód
-                details: A hibakódhozhoz tartozó üzenet
-                statusCode: 400
-        "401":
-          description: Kérés sikertelen.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationResponse'
-              example:
-                responseCode: Hibakód
-                details: A hibakódhozhoz tartozó üzenet
-                statusCode: 401
-        "422":
-          description: Kérés sikertelen.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OperationResponse'
-              example:
-                responseCode: Hibakód
-                details: A hibakódhozhoz tartozó üzenet
-                statusCode: 422
+#  /api/v1/eslist/query:
+#    get:
+#      tags:
+#        - Lista Panel
+#      description: Listapanel adat lekérés. Lehet mező szűréssel, vagy szűrés nélkül. A "Filter" mező TÖMBként viselkedik, több mezőre is lehet egyszerre szűrni, ÉS kapcsolat lesz közöttük. Dátum mezőre szűrés (a field nevéveben van 'date') esetén lehet intervallumot is megadni.
+#      security:
+#        - bearerAuth: []
+#      requestBody:
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/ListPanelQueryRequest'
+#            examples:
+#              Szűrés nélkül:
+#                value:
+#                  ListPanelId: 1
+#                  Filter: null
+#              Szűréssel:
+#                value:
+#                  ListPanelId: 1
+#                  Filter: [
+#                    {
+#                      FieldName: Partner_Id,
+#                      FilterValue: 1-1
+#                    }
+#                  ]
+#              Dátum szűréssel (intervallum):
+#                value:
+#                  ListPanelId: 5
+#                  Filter: [
+#                    {
+#                      FieldName: Date_Execution,
+#                      IntervalBegin: 2023-12-01,
+#                      IntervalEnd: 2023-12-31
+#                    }
+#                  ]
+#      responses:
+#        "200":
+#          description: Lekérdezés sikeres
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/OperationResponse'
+#              example:
+#                responseCode: null
+#                message: null
+#                messageEN: null
+#                details: null
+#                content: {
+#                  Data: [{
+#                    Partner_Id: 1-1,
+#                    Partner_Name: A nevem,
+#                    Partner_Code: 25,
+#                           .
+#                           .
+#                           .
+#                  },
+#                    {
+#                      Partner_Id: 1-2,
+#                      Partner_Name: Másik vagyok,
+#                      Partner_Code: 26,
+#                      .
+#                      .
+#                      .
+#                    }]
+#                }
+#                statusCode: 200
+#        "400":
+#          description: Kérés sikertelen.
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/OperationResponse'
+#              example:
+#                responseCode: Hibakód
+#                details: A hibakódhozhoz tartozó üzenet
+#                statusCode: 400
+#        "401":
+#          description: Kérés sikertelen.
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/OperationResponse'
+#              example:
+#                responseCode: Hibakód
+#                details: A hibakódhozhoz tartozó üzenet
+#                statusCode: 401
+#        "422":
+#          description: Kérés sikertelen.
+#          content:
+#            application/json:
+#              schema:
+#                $ref: '#/components/schemas/OperationResponse'
+#              example:
+#                responseCode: Hibakód
+#                details: A hibakódhozhoz tartozó üzenet
+#                statusCode: 422
   /api/v2/eslist/{panelId}/fields:
     get:
       tags:
