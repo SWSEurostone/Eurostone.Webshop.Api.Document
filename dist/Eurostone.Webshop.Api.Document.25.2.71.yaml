@@ -8,9 +8,9 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 25.2.71
-# servers:
-# - url: https://webshopdev.fpr.eurostone.hu
-#   description: Api dokumentáció
+servers:
+  - url: https://webshopdev.fpr.eurostone.hu
+    description: Fejlesztői api útvonal 
 tags:
   #- name: Partner
   #  description: Partner műveletek.
