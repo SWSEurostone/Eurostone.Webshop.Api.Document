@@ -22,6 +22,8 @@ tags:
     description: Eurostone kosár módosítás művelete
   - name: Menü
     description: Belépett felhasználó menüfa elem lekérdezése
+  - name: Varázsló
+    description: Webes form/varázsló műveletek
 
 #Végpontok  
 paths:
@@ -534,9 +536,65 @@ paths:
                   "StatusCode": 401
                 }
       
+  /api/v2/wizard/{wizardId}/start:
+    get:
+      tags:
+        - Varázsló
+      description: A weben adatbekérő/varázsló mezőinek lekérése, a varázsló indítása
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: wizardId
+          in: path
+          schema:
+            type: integer
+          required: true
+      responses: 
+        200:
+          description: Varázsló sikeres indítása
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example: {
+                responseCode: null,
+                message: null,
+                messageEN: null,
+                details: null,
+                content: {
+                  wizardCaption: "Bizonylat varázsló - Belföldi áru mennyiség szerint",
+                  fields: {
+                    wizardFieldId: 1,
+                    wizardId: 1,
+                    wizardPage: 1
+                  },
+                  operations: {
+                    Next: null,
+                    Back: null,
+                    Finish: "POST api/v2/basket/writesout"
+                  }
+                },
+                statusCode: 200
+              }
+        "422":
+          description: Varázsló elkezdése sikertelen.
+          content: 
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                {
+                  responseCode: "E023",
+                  message: "A varázsló nem található.",
+                  messageEN: null,
+                  details: null,
+                  content: 23,
+                  statusCode: 422
+                }
+
 # Objektumok
 components:
-  securitySchemes: 
+  securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
@@ -716,7 +774,7 @@ components:
           description: A kosár tétel típusa
     BasketWritesOut:
       description: Kosár tartalmának bizonylatra írás kérése. Ezek a fej adatok lesznek, a tétel(ek) a partnerId és a currentWizardType adja.
-      required: 
+      required:
         - PartnerId
         - CurrentWizardType
         - DateExecution
@@ -725,7 +783,7 @@ components:
         - SiteStreet
         - SiteNumber
         - LicencePlate1
-      properties: 
+      properties:
         PartnerId:
           type: string
           description: Partner azonosítója
@@ -737,11 +795,11 @@ components:
           description: Bizonylat belső megjegyzés
         HeadDescription:
           type: string
-          description: Bizonylat fej megjegyzés 
+          description: Bizonylat fej megjegyzés
         CountryCode:
           type: string
           description: Országkód
-        Country: 
+        Country:
           type: string
           description: Ország
         PartnerSiteId:
@@ -753,14 +811,14 @@ components:
         SiteCity:
           type: string
           description: cím város
-        SiteStreet: 
+        SiteStreet:
           type: string
           description: cím utca
         SiteNumber:
           type: string
           description: cím házszám
-        DateExecution: 
-          type: date
+        DateExecution:
+          type: object
           description: Teljesítés dátuma
         FootPrintDescription:
           type: string
@@ -838,7 +896,7 @@ components:
       description: A szűrés feltétele.
     UserMenuTree:
       type: object
-      properties: 
+      properties:
         NodeId:
           type: integer
           description: Ág azonosító
@@ -857,6 +915,64 @@ components:
         ExternalUrl:
           type: string
           description: Ha külső címre kell navigálni
+    WebWizardStartResponse:
+      type: object
+      description: Varázsló sikeres indításának visszatérő objektuma
+      properties:
+        WizardCaption:
+          type: string
+          description: A varázsló neve
+        Fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebWizardFieldModel'
+          description: A mezőnevek
+        Operations:
+          type: array
+          description: A varázslóban ezek a műveletek használhatók
+    WebWizardFieldModel:
+      type: object
+      description: Varázsló sikeres indítása, visszatérő mező objektum
+      properties:
+        WizardFieldId:
+          type: integer
+          description: A mező azonosítója
+        WizardId:
+          type: integer
+          description: A varázsló azonosítója
+        WizardPage:
+          type: integer
+          description: Lap/oldal, ahol megjelenik
+        WizardFieldName:
+          type: string
+          description: Mezőnév, amit tartalmaz
+        Visible:
+          type: boolean
+          description: Felületen megjelenik
+        WizardFieldNumber:
+          type: integer
+          description: ""
+        WizardFieldCaptionHU:
+          type: string
+          description: ""
+        ObjectSelector:
+          type: string
+          description: ""
+        DataType:
+          type: string
+          description: ""
+        WizardFieldType:
+          type: integer
+          description: ""
+        WizardFieldLocation:
+          type: integer
+          description: ""
+        DefaultValue:
+          type: object
+          description: ""
+        MinimumValue:
+          type: string
+          description: ""
     OperationResponse:
       type: object
       properties:
