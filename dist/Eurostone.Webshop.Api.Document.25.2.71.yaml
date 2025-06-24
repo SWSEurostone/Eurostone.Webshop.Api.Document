@@ -16,14 +16,16 @@ tags:
   #  description: Partner műveletek.
   - name: Lista Panel
     description: Lista panel műveletek.
-#  - name: Bizonylat
-#    description: Bizonylat rögzítés művelete.
+  - name: Bizonylat
+    description: Bizonylat rögzítés művelete.
   - name: Kosár
     description: Eurostone kosár módosítás művelete
   - name: Menü
     description: Belépett felhasználó menüfa elem lekérdezése
   - name: Varázsló
     description: Webes form/varázsló műveletek
+  - name: Objektum választó
+    description: Webes form/varázsló objektum választás listából
 
 #Végpontok  
 paths:
@@ -356,11 +358,6 @@ paths:
                 responseCode: Hibakód
                 details: A hibakódhozhoz tartozó üzenet
                 statusCode: 422
-#  /api/v1/voucher/dispoTruckTurnUpdate:
-#    post:
-#      tags:
-#        - Bizonylat
-#      description: Dispo bizonylathoz tehergépjármű(vek) (rendszám) forduló rögzítése
   /api/v2/basket/update:
     post:
       tags:
@@ -591,7 +588,147 @@ paths:
                   content: 23,
                   statusCode: 422
                 }
-
+  /api/v2/voucher/dispoTruckTurnUpdate:
+    post:
+      tags:
+        - Bizonylat
+      description: Diszpó/megelőző bizonylathoz rendszám és forduló rögzítése
+      security:
+        - bearerAuth[]:
+      requestBody: 
+        content: 
+          application/json:
+            schem:
+              $ref: '#/components/schemas/TruckTurn'
+            example: {
+                DispoPaperId: "1-12364",
+                LicencePlate: "AABB234",
+                TurnCount: 1
+            }
+      responses:
+        "200":
+          description: Rendszám/forduló mentés sikeres.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                message: "Bizonylat mentés sikeres."
+                content: "a bizonylat száma"
+                statusCode: 200
+        "400":
+          description: Rendszám/forduló mentése sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: E003
+                message: A kérés feldolgozása közben kivétel keletkezett.
+                messageEN: null,
+                details: Exception message
+                content: null
+                statusCode: 400
+        "401":
+          description: Rendszám/forduló mentése sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: E001
+                message: null
+                messageEN: null,
+                details: Token nem található, vagy a Tokennel nincs aktív session.
+                content: null
+                statusCode: 401        
+  /api/v2/objectselector/{objectName}?skip=0&take=100&requiretotalcount=true:
+    get:
+      tags:
+        - Objektum választó
+      description: A webes form/varázsló objektumválasztóihoz a lekérdezés
+      security:
+        - bearerAuth[]:
+      parameters:
+        - name: objectName
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: skip
+          description: a lekérdezés a lista elejéről ennyi sort hagyjon ki
+          in: query
+          schema:
+            type: integer
+          required: false
+        - name: take
+          description: a lekérdezés ennyi sort adjon vissza
+          in: query
+          schema:
+            type: integer
+          required: false
+        - name: requiredtotalcount
+          description: a lekérdezés visszaadja-e a teljes sor darabszámát
+          in: query
+          schema:
+            type: boolean
+          required: false  
+      responses:
+        "200":
+          description: Kérés sikeres.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: null
+                message: null
+                messageEN: null
+                details: null
+                content: {
+                  data: [
+                    {
+                      rowId: 33,
+                      article_Id: ""
+                    },
+                    {
+                      rowId: 34,
+                      article_Id: ""
+                    }
+                  ],
+                  totalCount: 140
+                }
+                statusCode: 200
+        "400":
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
+                statusCode: 400
+        "401":
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
+                statusCode: 401
+        "422":
+          description: Kérés sikertelen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResponse'
+              example:
+                responseCode: Hibakód
+                details: A hibakódhozhoz tartozó üzenet
+                statusCode: 422        
 # Objektumok
 components:
   securitySchemes:
