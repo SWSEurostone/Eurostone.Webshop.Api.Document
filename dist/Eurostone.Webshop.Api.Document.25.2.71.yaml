@@ -499,7 +499,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserMenuTree'
-            example: [
+              example: [
                 {
                   nodeId: 1,
                   rootId: null,
