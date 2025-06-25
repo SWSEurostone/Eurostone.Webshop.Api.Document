@@ -498,7 +498,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserMenuTree'
+                type: array
+                items: 
+                  $ref: '#/components/schemas/UserMenuTree'
               example: [
                 {
                   nodeId: 1,
@@ -688,12 +690,12 @@ paths:
                 content: {
                   data: [
                     {
-                      rowId: 33,
-                      article_Id: ""
+                      "PartnerId": "1-23699",
+                      "PartnerName": " D.C. Therm Üzemi Szolgáltató Kft - Paks"
                     },
                     {
-                      rowId: 34,
-                      article_Id: ""
+                      "PartnerId": "1-21403",
+                      "PartnerName": " GYSEV CARGO Zrt. - Sopron"
                     }
                   ],
                   totalCount: 140
