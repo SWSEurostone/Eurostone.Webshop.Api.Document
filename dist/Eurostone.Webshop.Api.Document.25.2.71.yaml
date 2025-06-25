@@ -494,7 +494,7 @@ paths:
         - bearerAuth: []
       responses:
         "200":
-          description: Sikeres menüfa kérés 
+          description: Sikeres menüfa kérés, lista megy vissza.
           content:
             application/json:
               schema:
