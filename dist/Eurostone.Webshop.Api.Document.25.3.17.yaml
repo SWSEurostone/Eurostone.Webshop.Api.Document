@@ -669,6 +669,16 @@ paths:
       responses:
         "200":
           description: "Sablon letöltés sikeres"
+          content:
+            application/octet-stream:
+              example: {
+                         fileContents: "dsjfjdsjds",
+                         contentType: "application/octet-stream",
+                         fileDownloadName: "köteges_bizonylat.xlsx",
+                         lastModified: null,
+                         emptyTag: null,
+                         enableRangeProcessing: false
+              }
   /api/v2/voucher/upload:
     post:
       tags:
