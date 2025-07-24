@@ -17,7 +17,7 @@ window.onload = function() {
     //   layout: "StandaloneLayout"
     // },
       {
-          url: "dist/Eurostone.Webshop.Api.Document.25.3.17.yaml",
+          url: "dist/Eurostone.Webshop.Api.Document.25.3.24.yaml",
           dom_id: '#swagger-ui',
           deepLinking: true,
           presets: [
