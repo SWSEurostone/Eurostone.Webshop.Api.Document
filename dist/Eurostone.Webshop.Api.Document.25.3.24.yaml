@@ -7,7 +7,7 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  version: 25.3.17
+  version: 25.3.24
 servers:
   - url: https://webshopdev.fpr.eurostone.hu
     description: Fejlesztői api útvonal
