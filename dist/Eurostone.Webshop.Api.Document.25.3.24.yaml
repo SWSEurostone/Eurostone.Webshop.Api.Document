@@ -393,6 +393,7 @@ paths:
           text/plain:
             schema:
               type: string
+            example: "{\"columns\":[{\"visibleIndex\":0,\"dataField\":\"id\",\"name\":\"id\",\"dataType\":\"number\",\"visible\":false},{\"visibleIndex\":1,\"dataField\":\"intValue\",\"name\":\"intValue\",\"dataType\":\"number\",\"visible\":true},{\"visibleIndex\":2,\"dataField\":\"decimalValue\",\"name\":\"decimalValue\",\"dataType\":\"number\",\"visible\":true},{\"visibleIndex\":3,\"dataField\":\"dateValue\",\"name\":\"dateValue\",\"dataType\":\"date\",\"visible\":true},{\"visibleIndex\":4,\"dataField\":\"boolValue\",\"name\":\"boolValue\",\"dataType\":\"boolean\",\"visible\":true},{\"visibleIndex\":5,\"dataField\":\"stringValue\",\"name\":\"stringValue\",\"dataType\":\"string\",\"visible\":true}],\"allowedPageSizes\":[10,25,50,100],\"filterPanel\":{\"filterEnabled\":true},\"filterValue\":null,\"searchText\":\"\",\"pageIndex\":0,\"pageSize\":10}"
       responses:
         "200":
           description: sikeres
